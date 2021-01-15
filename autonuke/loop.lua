@@ -1,5 +1,5 @@
 	--startup
-	
+
 	local component = require("component")
 	local sides = require("sides")
 
@@ -8,9 +8,11 @@
 
 
 	rsOutput.setOutput(sides.east, 0)
+	rsRefill.setOutput(sides.east, 0) 		--stop coolant refill
+	rsRefill.setOutput(sides.west, 0) 		--stop quad refill
 	startCoolant = rsOutput.getInput(sides.west)
 	startCell = rsOutput.getInput(sides.south)
-	if (coolant > 0 and cell > 0) then			-- *Both coolant and cell, something went wrong*
+	if (startCoolant > 0 and startCell > 0) then			-- *Both coolant and cell, something went wrong*
 		print("Something went wrong")
 		rsOutput.setOutput(sides.east, 14) 		--stop output
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor TODO turn on some lights?
@@ -43,9 +45,9 @@ while true do
 		print("Changing coolant")
 		rsOutput.setOutput(sides.east, 14) 		--stop output, process coolant
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor
-		rsRefill.setOutput(sides.north, 14) 	--refill coolant
+		rsRefill.setOutput(sides.east, 14) 		--refill coolant
 		os.sleep(1)
-		rsRefill.setOutput(sides.north, 0) 		--stop refill
+		rsRefill.setOutput(sides.east, 0) 		--stop refill
 		rsOutput.setOutput(sides.bottom, 14) 	--start reactor
 		rsOutput.setOutput(sides.east, 0)		--start output
 		print("Coolant changed")
