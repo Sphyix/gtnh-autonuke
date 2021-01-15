@@ -48,6 +48,16 @@ while true do
 		rsRefill.setOutput(sides.east, 14) 		--refill coolant
 		os.sleep(1)
 		rsRefill.setOutput(sides.east, 0) 		--stop refill
+		coolantAgain = rsOutput.getInput(sides.west)
+		while(coolantAgain > 0) do
+			rsOutput.setOutput(sides.east, 0)		--start output
+			os.sleep(1)
+			rsOutput.setOutput(sides.east, 14) 		--stop output, process coolant
+			rsRefill.setOutput(sides.east, 14) 		--refill coolant
+			os.sleep(1)
+			rsRefill.setOutput(sides.east, 0) 		--stop refill
+			coolantAgain = rsOutput.getInput(sides.west)
+		end
 		rsOutput.setOutput(sides.bottom, 14) 	--start reactor
 		rsOutput.setOutput(sides.east, 0)		--start output
 		print("Coolant changed")
