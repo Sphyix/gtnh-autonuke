@@ -20,11 +20,11 @@ while true do
 		--east: insert coolant
 		--south: insert quad
 
-	if (coolant > 0 && cell > 0) then			-- *Both coolant and cell, something went wrong*
+	if (coolant > 0 & cell > 0) then			-- *Both coolant and cell, something went wrong*
 		print("Something went wrong")
 		rsOutput.setOutput(sides.east, 14) 		--stop output
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor TODO turn on some lights?
-	elseif (coolant > 0 && cell == 0) then		-- *Coolant, stop reactor, process and refill, start reactor*
+	elseif (coolant > 0 & cell == 0) then		-- *Coolant, stop reactor, process and refill, start reactor*
 		print("Changing coolant")
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor
 		rsOutput.setOutput(sides.east, 14) 		--stop output, process coolant
@@ -32,7 +32,7 @@ while true do
 		os.sleep(1)
 		rsRefill.setOutput(sides.north, 0) 		--stop refill
 		rsOutput.setOutput(sides.bottom, 14) 	--start reactor
-	elseif(coolant == 0 && cell > 0) then		-- *Quad, stop reactor,  refill, start reactor*
+	elseif(coolant == 0 & cell > 0) then		-- *Quad, stop reactor,  refill, start reactor*
 		print("Changing quad")
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor
 		rsRefill.setOutput(sides.west, 14) 		--refill quad
