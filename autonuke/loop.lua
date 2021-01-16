@@ -79,12 +79,12 @@ while true do
 		print("Changing quad")
 		rsOutput.setOutput(sides.east, 14) 		--stop output, process coolant
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor
-		rsRefill.setOutput(sides.west, 14) 		--refill quad
+		rsRefill.setOutput(sides.south, 14) 	--refill quad
 		os.sleep(1)
-		rsRefill.setOutput(sides.west, 0) 		--stop refill
+		rsRefill.setOutput(sides.south, 0) 		--stop refill
 		rsOutput.setOutput(sides.bottom, 14) 	--start reactor
 		rsOutput.setOutput(sides.east, 0)		--start output
-		print("Qaud changed")
+		print("Quad changed")
 	end
 end
 
