@@ -40,6 +40,9 @@ while true do
 
 	if (energyQty == 14) then
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor, batteries full
+		print("Reactor stopped, batteries are full: " + energyQty)
+		print("Checking again in 20 seconds")
+		os.sleep(20)
 	elseif (coolant > 0 and cell > 0) then		-- *Both coolant and cell, something went wrong*
 		print("Something went wrong")
 		rsOutput.setOutput(sides.east, 14) 		--stop output
