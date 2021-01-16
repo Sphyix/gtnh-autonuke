@@ -26,6 +26,7 @@ while true do
 
 	local coolant = rsOutput.getInput(sides.west)
 	local cell = rsOutput.getInput(sides.south)
+	local energyQty = rsRefill.getInput(sides.north)
 	--rsOutput
 		--east: export from reactor
 		--bottom: turn on and off reactor
@@ -37,7 +38,9 @@ while true do
 		--east: insert coolant
 		--south: insert quad
 
-	if (coolant > 0 and cell > 0) then			-- *Both coolant and cell, something went wrong*
+	if (energyQty == 14) then
+		rsOutput.setOutput(sides.bottom, 0)		--stop reactor, batteries full
+	elseif (coolant > 0 and cell > 0) then		-- *Both coolant and cell, something went wrong*
 		print("Something went wrong")
 		rsOutput.setOutput(sides.east, 14) 		--stop output
 		rsOutput.setOutput(sides.bottom, 0)		--stop reactor TODO turn on some lights?
