@@ -18,25 +18,25 @@ Colors:
 local function newReactor(proxyID, rsSide)
 
 	local reac = {
-	comp = component.proxy(proxyID)
-	redstoneSide = rsSide
-	tempReading = 0 --number, Blue input
-	batteryStatus = 0 --number, Light grey input
-	coolantExtracted = 0 --number, Green input
-	depletedExtracted = 0 --number, Purple input
+	comp = component.proxy(proxyID);
+	redstoneSide = rsSide;
+	tempReading = 0; --number, Blue input
+	batteryStatus = 0; --number, Light grey input
+	coolantExtracted = 0;--number, Green input
+	depletedExtracted = 0; --number, Purple input
 	--reactorStatus --boolean, White output
 	--coolantExport	--boolean, Red output
 	--depletedExport --boolean, Black output
 	--coolantInsert --boolean, Yellow output
 	--rodInsert --boolean, Grey output
-	tempResetCount = 0 --number
-	offOnThermalSafe = false
+	tempResetCount = 0; --number
+	offOnThermalSafe = false;
 
-	cycleResetForTemp = 19
-	cycleCounter = 0
-	maxResetForTemp = 3
+	cycleResetForTemp = 19;
+	cycleCounter = 0;
+	maxResetForTemp = 3;
 	}
-	return reac
+	return reac;
 end
 
 local function updateValues(reactor)
@@ -67,7 +67,7 @@ local function checkForTemperature(reactor)
 		local isReset = true
 		if(reactor.tempReading>0) then
 			reactor.tempResetCount = reactor.tempResetCount + 1
-			print("Reactor turned off on thermals n" .. reactor.tempResetCount)
+			print("Reactor turned off on thermals n " .. reactor.tempResetCount)
 			isReset = false
 		else
 			reactor.cycleCounter = reactor.cycleCounter + 1
@@ -98,7 +98,7 @@ local function checkForCoolant(reactor)
 		while(reactor.coolantExtracted>0) do
 			print("Changing n " .. count)
 			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 15)
-			os.sleep(1)
+			os.sleep(2)
 			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
 			os.sleep(1)
 			updateValues(reactor)
