@@ -40,8 +40,7 @@ end
 local function updateValues(reactor)
 	reactor.tempReading = reactor.comp.getBundledInput(reactor.redstoneSide, colors.blue)
 	reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightblue)
-	reactor.coolantExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green)
-	reactor.depletedExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.purple)
+	reactor.avgEU = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green)
 end
 
 local function turnOffReactor(reactor)
