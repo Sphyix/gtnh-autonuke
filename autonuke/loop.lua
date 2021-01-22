@@ -89,7 +89,7 @@ function newReactor (proxyID, rsSide)
 				isReset = false
 			else
 				cycleCounter = cycleCounter + 1
-				if(cycleCounter>=19)
+				if(cycleCounter>=19) then
 					tempResetCount = 0
 					cycleCounter = 0
 				end
