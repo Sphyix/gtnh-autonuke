@@ -92,20 +92,14 @@ local function checkForCoolant(reactor)
 	updateValues(reactor)
 	if(reactor.coolantExtracted>0) then
 		print("Started changing coolant")
-		turnOffReactor(reactor)
-	
-		local count = 1
+		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
 		while(reactor.coolantExtracted>0) do
-			print("Changing n " .. count)
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
-			os.sleep(2)
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
+			print("Changing coolant...")
 			os.sleep(1)
 			updateValues(reactor)
-			count = count + 1
 		end
+		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
 		print("Finished changing coolant")
-		turnOnReactor(reactor)
 	end
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0)
 end
