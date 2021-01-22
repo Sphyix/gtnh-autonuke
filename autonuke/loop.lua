@@ -117,6 +117,9 @@ local function checkForDepleted(reactor)
 	updateValues(reactor)
 	if(reactor.batteryStatus<20 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
 		print("Rods depleted, getting ready to change them")
+		print("avgEU:" .. reactor.avgEU .. " battery status:" .. reactor.batteryStatus)
+		changeDepleted(reactor)
+		os.sleep(5)
 	end
 end
 
@@ -124,7 +127,7 @@ local function checkForBatteryStatus(reactor)
 	local latch = false
 	repeat
 		updateValues(reactor)
-		if(reactor.batteryStatus>215 and not latch) then --max 221
+		if(reactor.batteryStatus>215 and not latch) then --max 255(?)
 			print("Battery full, stopping reactor" .. reactor.batteryStatus)
 			turnOffReactor(reactor)
 			latch = true
