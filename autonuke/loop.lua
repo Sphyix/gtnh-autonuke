@@ -146,7 +146,6 @@ local function newReactor(proxyID, rsSide)
 				self.turnOnReactor();
 				latch = false;
 			end;
-
 			if(latch == true) then
 				os.sleep(10);
 			end;
