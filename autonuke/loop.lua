@@ -84,6 +84,14 @@ local function checkForTemperature(reactor)
 	end
 end
 
+local function resetAll(reactor)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 0)
+end
+
 local function startChangeCoolant(reactor)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 255)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
@@ -145,6 +153,7 @@ local function checkForBatteryStatus(reactor)
 end
 
 local function initialize(reactor)
+	resetAll(reactor)
 	updateValues(reactor)
 	checkForTemperature(reactor)
 	checkForBatteryStatus(reactor)
