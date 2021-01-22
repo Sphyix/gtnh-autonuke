@@ -54,7 +54,7 @@ local function turnOnReactor(reactor)
 	if(reactor.offOnThermalSafe) then
 		print("Reactor off on thermal safe")
 	else
-		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 15)
+		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 255)
 	end
 end
 
@@ -87,7 +87,7 @@ local function checkForTemperature(reactor)
 end
 
 local function checkForCoolant(reactor)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 15)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 255)
 	os.sleep(1)
 	updateValues(reactor)
 	if(reactor.coolantExtracted>0) then
@@ -97,7 +97,7 @@ local function checkForCoolant(reactor)
 		local count = 1
 		while(reactor.coolantExtracted>0) do
 			print("Changing n " .. count)
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 15)
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
 			os.sleep(2)
 			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
 			os.sleep(1)
@@ -111,7 +111,7 @@ local function checkForCoolant(reactor)
 end
 
 local function checkForDepleted(reactor)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 15)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 255)
 	os.sleep(1)
 	updateValues(reactor)
 	if(reactor.depletedExtracted>0) then
@@ -121,7 +121,7 @@ local function checkForDepleted(reactor)
 		local count = 1
 		while(reactor.depletedExtracted>0) do
 			print("Changing n " .. count)
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 15)
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 255)
 			os.sleep(1)
 			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 0)
 			os.sleep(1)
