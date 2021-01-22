@@ -66,8 +66,8 @@ local function checkForTemperature(reactor)
 	else
 		local isReset = true
 		if(reactor.tempReading>0) then
-			reactor.tempResetCount = sreactorelf.tempResetCount + 1
-			print("Reactor turned off on thermals n" .. tempResetCount)
+			reactor.tempResetCount = reactor.tempResetCount + 1
+			print("Reactor turned off on thermals n" .. reactor.tempResetCount)
 			isReset = false
 		else
 			reactor.cycleCounter = reactor.cycleCounter + 1
