@@ -22,8 +22,8 @@ local function newReactor(proxyID, rsSide)
 	redstoneSide = rsSide;
 	tempReading = 0; --number, Blue input
 	batteryStatus = 0; --number, Light grey input
-	coolantExtracted = 0; --boolean, Green input
-	depletedExtracted = 0; --boolean, Purple input
+	coolantExtracted = 0; --number, Green input
+	depletedExtracted = 0; --number, Purple input
 	--reactorStatus --boolean, White output
 	--coolantExport	--boolean, Red output
 	--depletedExport --boolean, Black output
@@ -46,141 +46,137 @@ local updateValues = function(reactor)
 	reactor.depletedExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.purple);
 end;
 
---[[		turnOffReactor = function(self)
-		self.comp.setBundledOutput(self.redstoneSide, colors.white, 0);
-	end;
+local turnOffReactor = function(reactor)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 0);
+end;
 
-		turnOnReactor = function(self)
-		if(self.offOnThermalSafe) then
-			print("Reactor off on thermal safe");
+local turnOnReactor = function(reactor)
+	if(reactor.offOnThermalSafe) then
+		print("Reactor off on thermal safe");
+	else
+		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 15);
+	end;
+end;
+
+local checkForTemperature = function(reactor)
+	if(reactor.tempResetCount>reactor.maxResetForTemp) then
+		turnOffReactor(reactor);
+		print("Reactor off on thermal safe");
+		reactor.offOnThermalSafe = true;
+	else
+		local isReset = true;
+		if(reactor.tempReading>0) then
+			reactor.tempResetCount = sreactorelf.tempResetCount + 1;
+			print("Reactor turned off on thermals n" .. tempResetCount);
+			isReset = false;
 		else
-			self.comp.setBundledOutput(self.redstoneSide, colors.white, 15);
-		end;
-	end;
-
-	checkForTemperature = function(self)
-		if(self.tempResetCount>self.maxResetForTemp) then
-			turnOffReactor();
-			print("Reactor off on thermal safe");
-			self.offOnThermalSafe = true;
-		else
-			local isReset = true;
-			if(self.tempReading>0) then
-				self.tempResetCount = self.tempResetCount + 1;
-				print("Reactor turned off on thermals n" .. tempResetCount);
-				isReset = false;
-			else
-				self.cycleCounter = self.cycleCounter + 1;
-				if(self.cycleCounter>=19) then
-					self.tempResetCount = 0;
-					self.cycleCounter = 0;
-				end;
+			reactor.cycleCounter = reactor.cycleCounter + 1;
+			if(reactor.cycleCounter>=19) then
+				reactor.tempResetCount = 0;
+				reactor.cycleCounter = 0;
 			end;
-			while(isReset == false) do
-				self.updateValues();
-				os.sleep(1);
-				if(self.tempReading == 0) then
-					isReset = true;
-				end;
+		end;
+		while(isReset == false) do
+			updateValues(reactor);
+			os.sleep(1);
+			if(reactor.tempReading == 0) then
+				isReset = true;
 			end;
 		end;
 	end;
+end;
 
-	checkForCoolant = function(self)
-		self.comp.setBundledOutput(self.redstoneSide, colors.red, 15);
-		os.sleep(1);
-		self.updateValues();
-		if(self.coolantExtracted>0) then
-			print("Started changing coolant");
-			self.turnOffReactor();
-		
-			local count = 1;
-			while(self.coolantExtracted>0) do
-				print("Changing n " .. count);
-				self.comp.setBundledOutput(self.redstoneSide, colors.yellow, 15);
-				os.sleep(1);
-				self.comp.setBundledOutput(self.redstoneSide, colors.yellow, 0);
-				os.sleep(1);
-				self.updateValues();
-				count = count + 1;
-			end;
-			print("Finished changing coolant");
-			self.turnOnReactor();
+local checkForCoolant = function(reactor)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 15);
+	os.sleep(1);
+	updateValues(reactor);
+	if(reactor.coolantExtracted>0) then
+		print("Started changing coolant");
+		turnOffReactor(reactor);
+	
+		local count = 1;
+		while(reactor.coolantExtracted>0) do
+			print("Changing n " .. count);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 15);
+			os.sleep(1);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0);
+			os.sleep(1);
+			updateValues(reactor);
+			count = count + 1;
 		end;
-		self.comp.setBundledOutput(self.redstoneSide, colors.red, 0);
+		print("Finished changing coolant");
+		turnOnReactor(reactor);
 	end;
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0);
+end;
 
-	checkForDepleted = function(self)
-		self.comp.setBundledOutput(self.redstoneSide, colors.black, 15);
-		os.sleep(1);
-		self.updateValues();
-		if(self.depletedExtracted>0) then
-			print("Started changing rods");
-			self.turnOffReactor();
-		
-			local count = 1;
-			while(self.depletedExtracted>0) do
-				print("Changing n " .. count);
-				self.comp.setBundledOutput(self.redstoneSide, colors.grey, 15);
-				os.sleep(1);
-				self.comp.setBundledOutput(self.redstoneSide, colors.grey, 0);
-				os.sleep(1);
-				self.updateValues();
-				count = count + 1;
-			end;
-			print("Finished changing rods");
-			self.turnOnReactor();
+local checkForDepleted = function(reactor)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 15);
+	os.sleep(1);
+	updateValues(reactor);
+	if(reactor.depletedExtracted>0) then
+		print("Started changing rods");
+		turnOffReactor(reactor);
+	
+		local count = 1;
+		while(reactor.depletedExtracted>0) do
+			print("Changing n " .. count);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 15);
+			os.sleep(1);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 0);
+			os.sleep(1);
+			updateValues(reactor);
+			count = count + 1;
 		end;
-		self.comp.setBundledOutput(self.redstoneSide, colors.black, 0);
+		print("Finished changing rods");
+		turnOnReactor(reactor);
 	end;
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 0);
+end;
 
-	checkForBatteryStatus = function(self)
-		local latch = false;
-		repeat
-			self.updateValues();
-			if(self.batteryStatus>14 & latch == false) then
-				print("Battery full, stopping reactor" .. self.batteryStatus);
-				self.turnOffReactor();
-				latch = true;
-			end
+local checkForBatteryStatus = function(reactor)
+	local latch = false;
+	repeat
+		updateValues(reactor);
+		if(reactor.batteryStatus>14 & latch == false) then
+			print("Battery full, stopping reactor" .. reactor.batteryStatus);
+			turnOffReactor(reactor);
+			latch = true;
+		end
 
-			if(self.batteryStatus<2 & latch == true) then
-				print("Battery depleted, restarting reactor" .. self.batteryStatus);
-				self.turnOnReactor();
-				latch = false;
-			end;
-			if(latch == true) then
-				os.sleep(10);
-			end;
-		until not latch
-	end;
+		if(reactor.batteryStatus<2 & latch == true) then
+			print("Battery depleted, restarting reactor" .. reactor.batteryStatus);
+			turnOnReactor(reactor);
+			latch = false;
+		end;
+		if(latch == true) then
+			os.sleep(10);
+		end;
+	until not latch
+end;
 
-	initialize = function (self)
-		self.updateValues();
-		self.checkForTemperature();
-		self.checkForCoolant();
-		self.checkForDepleted();
-		self.checkForBatteryStatus();
-		self.turnOnReactor();
-	end;
-	}
-	return reac;
-end
-]]
+local initialize = function (reactor)
+	updateValues(reactor);
+	checkForTemperature(reactor);
+	checkForCoolant(reactor);
+	checkForDepleted(reactor);
+	checkForBatteryStatus(reactor);
+	turnOnReactor(reactor);
+end;
 
 local rs1Code = "2009c856-ba4d-4449-afb4-37ceae46619d"
 
 local reactor = newReactor(rs1Code, sides.south)
 
---reactor:initialize()
+initialize(reactor)
 
 while(true) do
-	reactor:updateValues()
---[[	reactor:checkForTemperature()
-	reactor:checkForCoolant()
-	reactor:checkForDepleted()
-	reactor:checkForBatteryStatus()
-	]]
+	updateValues(reactor)
+	checkForTemperature(reactor)
+	checkForCoolant(reactor)
+	checkForDepleted(reactor)
+	checkForBatteryStatus(reactor)
+
 	os.sleep(1)
 end
 
