@@ -94,10 +94,10 @@ function newReactor (proxyID, rsSide)
 					cycleCounter = 0
 				end
 			end
-			while(!isReset) do
+			while(isReset == false) do
 				updateValues()
 				os.sleep(1)
-				if(value==0) then
+				if(value == 0) then
 					isReset = true
 				end
 			end
