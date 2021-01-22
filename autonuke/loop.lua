@@ -36,15 +36,6 @@ local function newReactor(proxyID, rsSide)
 	cycleCounter = 0;
 	maxResetForTemp = 3;
 
-	initialize = function (self)
-		self.updateValues();
-		self.checkForTemperature();
-		self.checkForCoolant();
-		self.checkForDepleted();
-		self.checkForBatteryStatus();
-		self.turnOnReactor();
-	end;
-
 	updateValues = function(self)
 		self.tempReading = self.comp.getBundledInput(self.redstoneSide, colors.blue);
 		self.batteryStatus = self.comp.getBundledInput(self.redstoneSide, colors.lightgrey);
@@ -52,11 +43,11 @@ local function newReactor(proxyID, rsSide)
 		self.depletedExtracted = self.comp.getBundledInput(self.redstoneSide, colors.purple);
 	end;
 
-	turnOffReactor = function(self)
+		turnOffReactor = function(self)
 		self.comp.setBundledOutput(self.redstoneSide, colors.white, 0);
 	end;
 
-	turnOnReactor = function(self)
+		turnOnReactor = function(self)
 		if(self.offOnThermalSafe) then
 			print("Reactor off on thermal safe");
 		else
@@ -160,6 +151,15 @@ local function newReactor(proxyID, rsSide)
 				os.sleep(10);
 			end;
 		until not latch
+	end;
+
+	initialize = function (self)
+		self.updateValues();
+		self.checkForTemperature();
+		self.checkForCoolant();
+		self.checkForDepleted();
+		self.checkForBatteryStatus();
+		self.turnOnReactor();
 	end;
 	}
 	return reac;
