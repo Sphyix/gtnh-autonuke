@@ -31,8 +31,7 @@ end
 
 function newReactor:new (proxyID, rsSide)
 
-	local self = {
-	comp = component.proxy(proxyID), redstoneSide = rsSide
+	local self = {comp = component.proxy(proxyID), redstoneSide = rsSide}
 	tempReading = 0 --number, Blue input
 	batteryStatus = 0 --number, Light grey input
 	coolantExtracted = 0 --boolean, Green input
@@ -174,10 +173,6 @@ function newReactor:new (proxyID, rsSide)
 			end
 		until not latch
 	end
-	}
-
-	return self
-
 end
 
 
