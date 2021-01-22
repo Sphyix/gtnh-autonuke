@@ -84,11 +84,11 @@ function newReactor (proxyID, rsSide)
 		else
 			local isReset = true
 			if(tempReading>0) then
-				tempResetCount += 1
+				tempResetCount = tempResetCount + 1
 				print("Reactor turned off on thermals n" .. tempResetCount)
 				isReset = false
 			else
-				cycleCounter+= 1
+				cycleCounter = cycleCounter + 1
 				if(cycleCounter>=19)
 					tempResetCount = 0
 					cycleCounter = 0
@@ -120,7 +120,7 @@ function newReactor (proxyID, rsSide)
 				self.comp.setBundledOutput(self.redstoneSide, colors.yellow, 0)
 				os.sleep(1)
 				updateValues()
-				count+= 1
+				count = count + 1
 			end
 			print("Finished changing coolant")
 			turnOnReactor()
@@ -144,7 +144,7 @@ function newReactor (proxyID, rsSide)
 				self.comp.setBundledOutput(self.redstoneSide, colors.grey, 0)
 				os.sleep(1)
 				updateValues()
-				count+= 1
+				count = count + 1
 			end
 			print("Finished changing rods")
 			turnOnReactor()
