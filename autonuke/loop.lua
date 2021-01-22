@@ -5,7 +5,7 @@ local colors = require("colors")
 --[[ 
 How to
 Colors:
-	Blue: input for overTemperature (doesn't control reactor directly, but checks if it resets too often)
+	Blue: input for overTemperature
 	Light grey: battery charge
 	White: output to turn on/off reactor
 	Red: output to start extracting coolant
@@ -15,21 +15,7 @@ Colors:
 	Green: input if coolant is extracted
 	Purple: input if depleted is extracted
 --]]
-
-local rs1Code = "2009c856-ba4d-4449-afb4-37ceae46619d"
-
-local reactor = newReactor:new(rs1Code, sides.south)
-
-reactor:initialize()
-while(true) do
-	reactor:checkForTemperature()
-	reactor:checkForCoolant()
-	reactor:checkForDepleted()
-	reactor:checkForBatteryStatus()
-	os.sleep(1)
-end
-
-function newReactor:new (proxyID, rsSide)
+local function newReactor(proxyID, rsSide)
 
 	local reac = {
 	comp = component.proxy(proxyID);
@@ -178,6 +164,22 @@ function newReactor:new (proxyID, rsSide)
 	}
 	return reac;
 end
+
+local rs1Code = "2009c856-ba4d-4449-afb4-37ceae46619d"
+
+local reactor = newReactor(rs1Code, sides.south)
+
+reactor:initialize()
+
+while(true) do
+	reactor:checkForTemperature()
+	reactor:checkForCoolant()
+	reactor:checkForDepleted()
+	reactor:checkForBatteryStatus()
+	os.sleep(1)
+end
+
+
 
 
 
