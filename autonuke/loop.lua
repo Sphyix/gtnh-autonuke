@@ -6,12 +6,12 @@ local colors = require("colors")
 How to
 Colors:
 	Blue: input for overTemperature
-	Light grey: battery charge
+	Light gray: battery charge
 	White: output to turn on/off reactor
 	Red: output to start extracting coolant
 	Black: output to start extracting depleted
 	Yellow: output to start inserting coolant
-	Grey: output to start inserting rods
+	Gray: output to start inserting rods
 	Green: input for average EU
 --]]
 local function newReactor(proxyID, rsSide)
@@ -20,13 +20,13 @@ local function newReactor(proxyID, rsSide)
 	comp = component.proxy(proxyID);
 	redstoneSide = rsSide;
 	tempReading = 0; --number, Blue input
-	batteryStatus = 0; --number, Light grey input
+	batteryStatus = 0; --number, Light gray input
 	avgEU = 0;--number, Green input
 	--reactorStatus --boolean, White output
 	--coolantExport	--boolean, Red output
 	--depletedExport --boolean, Black output
 	--coolantInsert --boolean, Yellow output
-	--rodInsert --boolean, Grey output
+	--rodInsert --boolean, Gray output
 	tempResetCount = 0; --number
 	offOnThermalSafe = false;
 
@@ -54,6 +54,14 @@ local function turnOnReactor(reactor)
 	else
 		reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 255)
 	end
+end
+
+local function resetAll(reactor)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 0)
 end
 
 local function checkForTemperature(reactor)
@@ -84,14 +92,6 @@ local function checkForTemperature(reactor)
 	end
 end
 
-local function resetAll(reactor)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 0)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 0)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 0)
-end
-
 local function startChangeCoolant(reactor)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 255)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
@@ -112,9 +112,9 @@ local function changeDepleted(reactor)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 255)
 	os.sleep(5) 
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 0)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 255)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 255)
 	os.sleep(5)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 0)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 0)
 	turnOnReactor(reactor)
 	print("Rods Changed")
 	os.sleep(1)
