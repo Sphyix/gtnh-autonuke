@@ -41,7 +41,7 @@ end
 
 local updateValues = function(reactor)
 	reactor.tempReading = reactor.comp.getBundledInput(reactor.redstoneSide, colors.blue);
-	reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightgrey);
+	reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightblue);
 	reactor.coolantExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green);
 	reactor.depletedExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.purple);
 end;
@@ -121,9 +121,9 @@ local checkForDepleted = function(reactor)
 		local count = 1;
 		while(reactor.depletedExtracted>0) do
 			print("Changing n " .. count);
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 15);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 15);
 			os.sleep(1);
-			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.grey, 0);
+			reactor.comp.setBundledOutput(reactor.redstoneSide, colors.gray, 0);
 			os.sleep(1);
 			updateValues(reactor);
 			count = count + 1;
@@ -138,13 +138,13 @@ local checkForBatteryStatus = function(reactor)
 	local latch = false;
 	repeat
 		updateValues(reactor);
-		if(reactor.batteryStatus>14 & latch == false) then
+		if(reactor.batteryStatus>14 and not latch) then
 			print("Battery full, stopping reactor" .. reactor.batteryStatus);
 			turnOffReactor(reactor);
 			latch = true;
 		end
 
-		if(reactor.batteryStatus<2 & latch == true) then
+		if(reactor.batteryStatus<2 and latch ) then
 			print("Battery depleted, restarting reactor" .. reactor.batteryStatus);
 			turnOnReactor(reactor);
 			latch = false;
