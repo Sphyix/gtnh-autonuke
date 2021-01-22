@@ -35,15 +35,18 @@ local function newReactor(proxyID, rsSide)
 	cycleResetForTemp = 19;
 	cycleCounter = 0;
 	maxResetForTemp = 3;
+	}
+	return reac;
+end
 
-	updateValues = function(self)
-		self.tempReading = self.comp.getBundledInput(self.redstoneSide, colors.blue);
-		self.batteryStatus = self.comp.getBundledInput(self.redstoneSide, colors.lightgrey);
-		self.coolantExtracted = self.comp.getBundledInput(self.redstoneSide, colors.green);
-		self.depletedExtracted = self.comp.getBundledInput(self.redstoneSide, colors.purple);
-	end;
+local updateValues = function(reactor)
+	reactor.tempReading = reactor.comp.getBundledInput(reactor.redstoneSide, colors.blue);
+	reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightgrey);
+	reactor.coolantExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green);
+	reactor.depletedExtracted = reactor.comp.getBundledInput(reactor.redstoneSide, colors.purple);
+end;
 
-		turnOffReactor = function(self)
+--[[		turnOffReactor = function(self)
 		self.comp.setBundledOutput(self.redstoneSide, colors.white, 0);
 	end;
 
@@ -163,18 +166,21 @@ local function newReactor(proxyID, rsSide)
 	}
 	return reac;
 end
+]]
 
 local rs1Code = "2009c856-ba4d-4449-afb4-37ceae46619d"
 
 local reactor = newReactor(rs1Code, sides.south)
 
-reactor:initialize()
+--reactor:initialize()
 
 while(true) do
-	reactor:checkForTemperature()
+	reactor:updateValues()
+--[[	reactor:checkForTemperature()
 	reactor:checkForCoolant()
 	reactor:checkForDepleted()
 	reactor:checkForBatteryStatus()
+	]]
 	os.sleep(1)
 end
 
