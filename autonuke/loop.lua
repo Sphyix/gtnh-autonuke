@@ -97,16 +97,15 @@ local function startChangeCoolant(reactor)
 end
 
 local function stopChangeCoolant(reactor)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 255)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 0)
 	os.sleep(1)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 255)
+	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
 end
 
 local function changeDepleted(reactor)
 	print("Changing Rods")
 	turnOffReactor(reactor)
 	stopChangeCoolant(reactor)
-	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.yellow, 0)
 	os.sleep(1)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.black, 255)
 	os.sleep(5) 
@@ -162,7 +161,7 @@ local function initialize(reactor)
 	checkForDepleted(reactor)
 end
 
-local rs1Code = "2009c856-ba4d-4449-afb4-37ceae46619d"
+local rs1Code = "29d0a39d-794a-41c6-8f3e-800db8dbd01d"
 
 local reactor = newReactor(rs1Code, sides.south)
 
