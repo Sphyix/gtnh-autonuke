@@ -167,6 +167,7 @@ local reactor = newReactor(rs1Code, sides.east)
 local reactorTwo = newReactor(rs1Code, sides.west)
 
 initialize(reactor)
+initialize(reactorTwo)
 
 while(true) do
 	updateValues(reactor)
