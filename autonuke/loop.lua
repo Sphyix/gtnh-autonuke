@@ -27,7 +27,7 @@ local function newReactor(proxyID, rsSide)
 	--depletedExport --boolean, Black output
 	--coolantInsert --boolean, Yellow output
 	--rodInsert --boolean, Gray output
-	tempResetCount = 0; --number
+	tempResetCount = 0;
 	offOnThermalSafe = false;
 
 	cycleResetForTemp = 19;
@@ -121,7 +121,7 @@ end
 
 local function checkForDepleted(reactor)
 	updateValues(reactor)
-	if(reactor.batteryStatus<20 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
+	if(reactor.batteryStatus<40 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
 		print("Rods depleted, getting ready to change them")
 		print("avgEU:" .. reactor.avgEU .. " battery status:" .. reactor.batteryStatus)
 		changeDepleted(reactor)
@@ -139,7 +139,7 @@ local function checkForBatteryStatus(reactor)
 			latch = true
 		end
 
-		if(reactor.batteryStatus<20 and latch ) then
+		if(reactor.batteryStatus<50 and latch ) then
 			print("Battery depleted, restarting reactor" .. reactor.batteryStatus)
 			turnOnReactor(reactor)
 			latch = false
@@ -163,7 +163,8 @@ end
 
 local rs1Code = "29d0a39d-794a-41c6-8f3e-800db8dbd01d"
 
-local reactor = newReactor(rs1Code, sides.south)
+local reactor = newReactor(rs1Code, sides.east)
+local reactorTwo = newReactor(rs1Code, sides.west)
 
 initialize(reactor)
 
@@ -171,8 +172,12 @@ while(true) do
 	updateValues(reactor)
 	checkForTemperature(reactor)
 	checkForBatteryStatus(reactor)
+	updateValues(reactorTwo)
+	checkForTemperature(reactorTwo)
+	checkForBatteryStatus(reactorTwo)
 	os.sleep(2)
 	checkForDepleted(reactor)
+	checkForDepleted(reactorTwo)
 end
 
 
