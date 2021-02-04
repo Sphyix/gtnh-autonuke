@@ -39,10 +39,10 @@ local function newReactor(proxyID, rsSide)
 end
 
 local function updateAllValues(reactorTable)
-	for k,reactor in pairs(reactorTable) do
-		reactor.tempReading = reactor.comp.getBundledInput(reactor.redstoneSide, colors.blue)
-		reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightblue)
-		reactor.avgEU = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green)
+	for k,reac in pairs(reactorTable) do
+		reac.tempReading = reac.comp.getBundledInput(reac.redstoneSide, colors.blue)
+		reac.batteryStatus = reac.comp.getBundledInput(reac.redstoneSide, colors.lightblue)
+		reac.avgEU = reac.comp.getBundledInput(reac.redstoneSide, colors.green)
 	end
 end
 
@@ -132,43 +132,43 @@ local function changeDepleted(reactor)
 end
 
 local function checkForDepleted(reactorTable)
-	for k,reactor in pairs(reactorTable) do
-		updateValues(reactor)
-		if(reactor.batteryStatus<40 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
+	for k,reac in pairs(reactorTable) do
+		updateValues(reac)
+		if(reac.batteryStatus<40 and reac.comp.getBundledOutput(reac.redstoneSide, colors.white) > 0 and reac.avgEU == 0) then
 			print("Rods depleted on reactor n " .. k ..", getting ready to change them")
-			print("avgEU: " .. reactor.avgEU .. " battery status: " .. reactor.batteryStatus)
-			changeDepleted(reactor)
+			print("avgEU: " .. reac.avgEU .. " battery status: " .. reac.batteryStatus)
+			changeDepleted(reac)
 			os.sleep(5)
 		end
 	end
 end
 
 local function checkForBatteryStatus(reactorTable)
-	for k,reactor in pairs(reactorTable) do
-		updateValues(reactor)
-		if(reactor.batteryStatus>215 and not reactor.batteryLatch) then --max 255(?)
-			print("Battery full, stopping reactor n " .. k .. ": " .. reactor.batteryStatus)
-			turnOffReactor(reactor)
-			reactor.batteryLatch = true
+	for k,reac in pairs(reactorTable) do
+		updateValues(reac)
+		if(reac.batteryStatus>215 and not reac.batteryLatch) then --max 255(?)
+			print("Battery full, stopping reactor n " .. k .. ": " .. reac.batteryStatus)
+			turnOffReactor(reac)
+			reac.batteryLatch = true
 		end
-		if(reactor.batteryStatus<50 and reactor.batteryLatch ) then
-			print("Battery depleted, restarting reactor" .. k .. ": " .. reactor.batteryStatus)
-			turnOnReactor(reactor)
-			reactor.batteryLatch = false
+		if(reac.batteryStatus<50 and reac.batteryLatch ) then
+			print("Battery depleted, restarting reactor" .. k .. ": " .. reac.batteryStatus)
+			turnOnReactor(reac)
+			reac.batteryLatch = false
 		end
 	end
 end
 
 local function initialize(reactorTable)
-	for _,reactor in pairs(reactorTable) do
-		resetAll(reactor)
-		updateValues(reactor)
-		checkForTemperature(reactor)
-		checkForBatteryStatus(reactor)
-		startChangeCoolant(reactor)
-		turnOnReactor(reactor)
+	for _,reac in pairs(reactorTable) do
+		resetAll(reac)
+		updateValues(reac)
+		--checkForTemperature(reactor)
+		checkForBatteryStatus(reac)
+		startChangeCoolant(reac)
+		turnOnReactor(reac)
 		os.sleep(2)
-		checkForDepleted(reactor)
+		checkForDepleted(reac)
 	end
 end
 
