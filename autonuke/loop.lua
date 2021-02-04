@@ -33,8 +33,17 @@ local function newReactor(proxyID, rsSide)
 	cycleResetForTemp = 19;
 	cycleCounter = 0;
 	maxResetForTemp = 3;
+	batteryLatch = false;
 	}
 	return reac;
+end
+
+local function updateAllValues(reactorTable)
+	for k,reactor in pairs(reactorTable) do
+		reactor.tempReading = reactor.comp.getBundledInput(reactor.redstoneSide, colors.blue)
+		reactor.batteryStatus = reactor.comp.getBundledInput(reactor.redstoneSide, colors.lightblue)
+		reactor.avgEU = reactor.comp.getBundledInput(reactor.redstoneSide, colors.green)
+	end
 end
 
 local function updateValues(reactor)
@@ -63,33 +72,36 @@ local function resetAll(reactor)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.white, 0)
 end
 
-local function checkForTemperature(reactor)
-	if(reactor.tempResetCount>reactor.maxResetForTemp) then
-		turnOffReactor(reactor)
-		print("Reactor off on thermal safe")
-		reactor.offOnThermalSafe = true
-	else
-		local isReset = true
-		if(reactor.tempReading>0) then
-			reactor.tempResetCount = reactor.tempResetCount + 1
-			print("Reactor turned off on thermals n " .. reactor.tempResetCount)
-			isReset = false
+--[[ TODO WIP
+local function checkForTemperature(reactorTable)
+	for k,reactor in pairs(reactorTable) do
+		if(reactor.tempResetCount>reactor.maxResetForTemp) then
+			turnOffReactor(reactor)
+			print("Reactor n " .. k .. " off on thermal safe")
+			reactor.offOnThermalSafe = true
 		else
-			reactor.cycleCounter = reactor.cycleCounter + 1
-			if(reactor.cycleCounter>=19) then
-				reactor.tempResetCount = 0
-				reactor.cycleCounter = 0
+			if(reactor.tempReading>0) then
+				reactor.tempResetCount = reactor.tempResetCount + 1
+				print("Reactor " .. k .. " turned off on thermals n " .. reactor.tempResetCount .. " times")
+				isReset = false
+			else
+				reactor.cycleCounter = reactor.cycleCounter + 1
+				if(reactor.cycleCounter>=19) then
+					reactor.tempResetCount = 0
+					reactor.cycleCounter = 0
+				end
 			end
-		end
-		while(isReset == false) do
-			updateValues(reactor)
-			os.sleep(1)
-			if(reactor.tempReading == 0) then
-				isReset = true
+			while(isReset == false) do
+				updateValues(reactor)
+				os.sleep(1)
+				if(reactor.tempReading == 0) then
+					isReset = true
+				end
 			end
 		end
 	end
 end
+--]]
 
 local function startChangeCoolant(reactor)
 	reactor.comp.setBundledOutput(reactor.redstoneSide, colors.red, 255)
@@ -119,66 +131,60 @@ local function changeDepleted(reactor)
 	startChangeCoolant(reactor)
 end
 
-local function checkForDepleted(reactor)
-	updateValues(reactor)
+local function checkForDepleted(reactorTable)
+	for k,reactor in pairs(reactorTable) do
+		updateValues(reactor)
 	if(reactor.batteryStatus<40 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
-		print("Rods depleted, getting ready to change them")
-		print("avgEU:" .. reactor.avgEU .. " battery status:" .. reactor.batteryStatus)
+		print("Rods depleted on reactor n " .. k ..", getting ready to change them")
+		print("avgEU: " .. reactor.avgEU .. " battery status: " .. reactor.batteryStatus)
 		changeDepleted(reactor)
 		os.sleep(5)
 	end
 end
 
-local function checkForBatteryStatus(reactor)
-	local latch = false
-	repeat
+local function checkForBatteryStatus(reactorTable)
+	for k,reactor in pairs(reactorTable) do
 		updateValues(reactor)
-		if(reactor.batteryStatus>215 and not latch) then --max 255(?)
-			print("Battery full, stopping reactor" .. reactor.batteryStatus)
+		if(reactor.batteryStatus>215 and not reactor.batteryLatch) then --max 255(?)
+			print("Battery full, stopping reactor n " .. k .. ": " .. reactor.batteryStatus)
 			turnOffReactor(reactor)
-			latch = true
+			reactor.batteryLatch = true
 		end
-
-		if(reactor.batteryStatus<50 and latch ) then
-			print("Battery depleted, restarting reactor" .. reactor.batteryStatus)
+		if(reactor.batteryStatus<50 and reactor.batteryLatch ) then
+			print("Battery depleted, restarting reactor" .. k .. ": " .. reactor.batteryStatus)
 			turnOnReactor(reactor)
-			latch = false
+			reactor.batteryLatch = false
 		end
-		if(latch == true) then
-			os.sleep(10)
-		end
-	until not latch
+	end
 end
 
-local function initialize(reactor)
-	resetAll(reactor)
-	updateValues(reactor)
-	checkForTemperature(reactor)
-	checkForBatteryStatus(reactor)
-	startChangeCoolant(reactor)
-	turnOnReactor(reactor)
-	os.sleep(2)
-	checkForDepleted(reactor)
+local function initialize(reactorTable)
+	for _,reactor in pairs(reactorTable) do
+		resetAll(reactor)
+		updateValues(reactor)
+		checkForTemperature(reactor)
+		checkForBatteryStatus(reactor)
+		startChangeCoolant(reactor)
+		turnOnReactor(reactor)
+		os.sleep(2)
+		checkForDepleted(reactor)
+	end
 end
 
 local rs1Code = "29d0a39d-794a-41c6-8f3e-800db8dbd01d"
 
-local reactor = newReactor(rs1Code, sides.east)
-local reactorTwo = newReactor(rs1Code, sides.west)
+local reactors = {}
+reactors[1] = newReactor(rs1Code, sides.east)
+reactors[2] = newReactor(rs1Code, sides.west)
 
-initialize(reactor)
-initialize(reactorTwo)
+initialize(reactors)
 
 while(true) do
-	updateValues(reactor)
-	checkForTemperature(reactor)
-	checkForBatteryStatus(reactor)
-	updateValues(reactorTwo)
-	checkForTemperature(reactorTwo)
-	checkForBatteryStatus(reactorTwo)
+	updateAllValues(reactors)
+	--checkForTemperature(reactor)
+	checkForBatteryStatus(reactors)
 	os.sleep(2)
-	checkForDepleted(reactor)
-	checkForDepleted(reactorTwo)
+	checkForDepleted(reactors)
 end
 
 
