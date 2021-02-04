@@ -134,11 +134,12 @@ end
 local function checkForDepleted(reactorTable)
 	for k,reactor in pairs(reactorTable) do
 		updateValues(reactor)
-	if(reactor.batteryStatus<40 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
-		print("Rods depleted on reactor n " .. k ..", getting ready to change them")
-		print("avgEU: " .. reactor.avgEU .. " battery status: " .. reactor.batteryStatus)
-		changeDepleted(reactor)
-		os.sleep(5)
+		if(reactor.batteryStatus<40 and reactor.comp.getBundledOutput(reactor.redstoneSide, colors.white) > 0 and reactor.avgEU == 0) then
+			print("Rods depleted on reactor n " .. k ..", getting ready to change them")
+			print("avgEU: " .. reactor.avgEU .. " battery status: " .. reactor.batteryStatus)
+			changeDepleted(reactor)
+			os.sleep(5)
+		end
 	end
 end
 
@@ -186,13 +187,3 @@ while(true) do
 	os.sleep(2)
 	checkForDepleted(reactors)
 end
-
-
-
-
-
-
-
-	
-
-
