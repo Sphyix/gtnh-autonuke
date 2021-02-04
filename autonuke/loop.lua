@@ -134,7 +134,7 @@ end
 local function checkForDepleted(reactorTable)
 	for k,reac in pairs(reactorTable) do
 		updateValues(reac)
-		if(reac.batteryStatus<40 and reac.comp.getBundledOutput(reac.redstoneSide, colors.white) > 0 and reac.avgEU == 0) then
+		if(reac.batteryStatus<40 and reac.comp.getBundledOutput(reac.redstoneSide, colors.white) > 0 and reac.avgEU == 0 and not reac.batteryLatch) then
 			print("Rods depleted on reactor n " .. k ..", getting ready to change them")
 			print("avgEU: " .. reac.avgEU .. " battery status: " .. reac.batteryStatus)
 			changeDepleted(reac)
@@ -152,7 +152,7 @@ local function checkForBatteryStatus(reactorTable)
 			reac.batteryLatch = true
 		end
 		if(reac.batteryStatus<50 and reac.batteryLatch ) then
-			print("Battery depleted, restarting reactor" .. k .. ": " .. reac.batteryStatus)
+			print("Battery depleted, restarting reactor n " .. k .. ": " .. reac.batteryStatus)
 			turnOnReactor(reac)
 			reac.batteryLatch = false
 		end
