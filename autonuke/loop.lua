@@ -160,23 +160,24 @@ local function checkForBatteryStatus(reactorTable)
 end
 
 local function initialize(reactorTable)
-	for _,reac in pairs(reactorTable) do
+	for k,reac in pairs(reactorTable) do
+		print("Initializing reactor " .. k)
 		resetAll(reac)
 		updateValues(reac)
-		--checkForTemperature(reactor)
-		checkForBatteryStatus(reac)
 		startChangeCoolant(reac)
 		turnOnReactor(reac)
-		os.sleep(2)
-		checkForDepleted(reac)
 	end
+	--checkForTemperature(reactorTable)
+	checkForBatteryStatus(reactorTable)
+	os.sleep(2)
+	checkForDepleted(reactorTable)
 end
 
 local rs1Code = "29d0a39d-794a-41c6-8f3e-800db8dbd01d"
 
 local reactors = {}
-reactors[1] = newReactor(rs1Code, sides.east)
-reactors[2] = newReactor(rs1Code, sides.west)
+reactors[0] = newReactor(rs1Code, sides.east)
+reactors[1] = newReactor(rs1Code, sides.west)
 
 initialize(reactors)
 
